@@ -10,8 +10,8 @@ Item {
 	property real radius: 10
 	property int fillMode: Image.PreserveAspectCrop
 
-	width: 22
-	height: 22
+	implicitWidth: 22
+	implicitHeight: 22
 
 	Image {
 		id: image
