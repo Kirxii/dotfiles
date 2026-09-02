@@ -134,16 +134,22 @@ Item {
 				Layout.fillWidth: true
 				Layout.fillHeight: true
 
-				property bool shouldScroll: secondaryText.width > width
+				property bool isScrolling: false
+				property bool shouldScroll: secondaryText.implicitWidth > width
 				property string musicInfo: root.activePlayer
 					? `<font color="#89b4fa">${root.activePlayer?.trackTitle}</font> • \
 						<font color="#a6e3a1">${root.activePlayer?.trackArtist}</font>`
 					: ""
-				onMusicInfoChanged: resetMarquee()
-				
-				function resetMarquee() {
-					scrollAnimation.stop();
+
+				onMusicInfoChanged: {
+					isScrolling = false;
 					textContent.x = 0;
+
+					Qt.callLater(() => {
+						if (marqueeContainer.shouldScroll) {
+							isScrolling = true;
+						}
+					});
 				}
 
 				Item {
@@ -154,7 +160,7 @@ Item {
 					
 					MusicInfoText {
 						id: primaryText
-						text: marqueeContainer.musicInfo + "&nbsp;".repeat(20)
+						text: marqueeContainer.musicInfo + (marqueeContainer.shouldScroll ? "&nbsp;".repeat(20) : "")
 						anchors.left: parent.left
 						anchors.verticalCenter: parent.verticalCenter
 					}
@@ -167,9 +173,11 @@ Item {
 						visible: marqueeContainer.shouldScroll
 					}
 
-					NumberAnimation on x {
+					NumberAnimation{
 						id: scrollAnimation
-						running: marqueeContainer.shouldScroll
+						target: textContent
+						property: "x"
+						running: marqueeContainer.isScrolling
 						loops: Animation.Infinite
 						from: 0
 						to: -primaryText.implicitWidth

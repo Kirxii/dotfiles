@@ -1,5 +1,0 @@
-This is required to have if you want saved colorschemes between sessions.
-You can add more comments by starting a line with a capitalized letter before the actual colorscheme name, placing it after the name would cause an error.
-You can also remove these comments altogether.
-
-catppuccin-mocha

@@ -1,13 +1,8 @@
-require("core.utils")
-require("core.options")
-require("core.autocmds")
-require("core.keymaps")
-
--- NOTE: This makes sure that LazyVim is able to run
+-- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-  local out = vim.fn.system { "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath }
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
       { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
@@ -20,30 +15,26 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- NOTE: LazyVim configurations
+-- Make sure to setup `mapleader` and `maplocalleader` before
+-- loading lazy.nvim so that mappings are correct.
+-- This is also a good place to setup other settings (vim.opt)
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+
+-- Setup lazy.nvim
 require("lazy").setup({
   spec = {
-    { import = "themes" },
+    -- import your plugins
     { import = "plugins" },
-    { import = "plugins.lsp" },
     { import = "plugins.text-editing" },
-    { import = "plugins.ui" },
   },
-
-  defaults = {
-    lazy = false,
-    version = false,
+  change_detection = {
+    notify = false,
+    enabled = true,
   },
-
+  -- Configure any other settings here. See the documentation for more details.
+  -- colorscheme that will be used when installing plugins.
   install = { colorscheme = { "catppuccin" } },
+  -- automatically check for plugin updates
   checker = { enabled = true },
-  performance = {},
-
-  change_detection = { enabled = false },
-}, {
-  install = {
-    colorscheme = {
-      "catppuccin",
-    },
-  },
 })
