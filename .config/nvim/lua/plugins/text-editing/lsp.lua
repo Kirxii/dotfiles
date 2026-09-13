@@ -4,8 +4,12 @@ return {
 		"mason-org/mason.nvim",
 		build = ":MasonUpdate",
 		event = "VeryLazy",
+		keys = {
+			{ "<leader>:", "<cmd>Mason<cr>", desc = "Mason" },
+		},
+
 		opts = {
-			ui = {border = "single"},
+			ui = { border = "single" },
 			ensure_installed = {
 				"js-debug-adapter",
 				"black",
@@ -16,6 +20,7 @@ return {
 		config = function(_, opts)
 			require("mason").setup(opts)
 			local mr = require("mason-registry")
+
 			mr:on("package:install:success", function()
 				vim.defer_fn(function()
 					-- trigger FileType event to possibly load this newly installed LSP server
@@ -46,6 +51,25 @@ return {
 
 			automatic_installation = true,
 			automatic_enable = false,
-		}
-	}
+		},
+	},
+	{
+		"nvimdev/lspsaga.nvim",
+
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter", -- optional
+			"nvim-tree/nvim-web-devicons", -- optional
+		},
+
+		opts = {
+			ui = {
+				code_action = "󰯪",
+			},
+		},
+	},
+	{
+		"onsails/lspkind.nvim",
+
+		opts = {},
+	},
 }
