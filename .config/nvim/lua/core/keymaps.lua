@@ -7,7 +7,10 @@ local expr = function(desc)
 	return { silent = true, expr = true, remap = false, desc = desc }
 end
 
-vim.keymap.set("i", "<cr>", function()
+keyset("n", "<leader>;", "<cmd>Lazy<cr>")
+
+-- Insert mode QoLs
+keyset("i", "<cr>", function()
 	-- Get the current line text and cursor position
 	local line = vim.api.nvim_get_current_line()
 	local col = vim.api.nvim_win_get_cursor(0)[2]
@@ -29,6 +32,36 @@ vim.keymap.set("i", "<cr>", function()
 	-- Fallback to default Enter behavior
 	return "<CR>"
 end, { expr = true, replace_keycodes = true, desc = "Clear empty comment on Enter" })
+
+--- Smart entry into insert mode on blank lines
+--- @param key string "i" or "a"
+local function smart_insert(key)
+	return function()
+		local line = vim.api.nvim_get_current_line()
+		if line:find("^%s*$") then
+			return '"_cc'
+		end
+		return key
+	end
+end
+
+-- Map 'i' and 'a' in normal mode to auto-indent blank lines
+keyset("n", "i", smart_insert("i"), { expr = true, noremap = true, desc = "Smart insert with auto-indent" })
+keyset("n", "a", smart_insert("a"), { expr = true, noremap = true, desc = "Smart append with auto-indent" })
+
+--- Smart Tab handler compatible with tabout.nvim and completion plugins
+keyset("i", "<tab>", function()
+	local line = vim.api.nvim_get_current_line()
+	local col = vim.api.nvim_win_get_cursor(0)[2]
+	local before_cursor = line:sub(1, col)
+
+	-- If the line is blank or only contains whitespace before cursor, indent properly
+	if before_cursor:match("^$") then
+		return "<C-f>" -- Triggers Neovim's auto-indent calculation for the line
+	end
+
+	return "<Plug>(Tabout)"
+end, { expr = true, remap = false, desc = "Smart Tab / Tabout" })
 
 -- Marks
 keyset("n", "<leader>m", "`", silent("Marks"))

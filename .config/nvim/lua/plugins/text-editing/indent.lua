@@ -22,16 +22,6 @@ return {
 		},
 	},
 	{
-		-- Automatically adjust to the previous line's indent level
-		"vidocqh/auto-indent.nvim",
-		event = "BufReadPre",
-
-		opts = {
-			lightmode = true,
-			ignore_filetype = {},
-		},
-	},
-	{
 		-- Smartly guess the indent style and adjust the tabbing
 		"nmac427/guess-indent.nvim",
 		event = "BufReadPre",
