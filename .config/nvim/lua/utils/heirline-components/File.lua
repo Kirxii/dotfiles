@@ -1,7 +1,35 @@
+-- Helper functions
 local helper = require("utils.heirline")
+local hl = require("utils.highlights")
 
-local FileIcon = helper.surround("rounded", function(self)
-  return { fg = "background", bg = self.file_icon_color }
+-- Highlights
+local background = hl.dec_to_rgb(COLORS.pmenu)
+local contrast = hl.dec_to_rgb(0xFFFFFF)
+local surface = hl.rgb_to_dec(hl.blend_colors(background, contrast, 0.02))
+
+-- Component's parts
+local FileIcon = helper.surround({
+  -- TODO: Make a helper function for making delimiters easier
+  -------- Preferably the parameters should be in the order (shared, overrides)
+  -------- shared: { delimiter, highlight }
+  -------- overrides: { left?: shared, right?: shared }
+  left = {
+    delimiter = "rounded",
+    highlight = function(self)
+      return { fg = self.file_icon_color, bg = "none" }
+    end,
+  },
+  right = {
+    delimiter = "rounded",
+    highlight = function(self)
+      return { fg = self.file_icon_color }
+    end,
+  },
+}, function(self)
+  return {
+    fg = COLORS.pmenu,
+    bg = self.file_icon_color,
+  }
 end, {
   provider = function(self)
     return self.file_icon .. " "
@@ -13,10 +41,10 @@ local FileName = {
     -- TODO: Figure out if it is possible to know the source of a nameless
     -------- buffer to see if I can have more information than "unknown"
     if self.file_name == "" then
-      return "unknown"
+      return " unknown"
     end
 
-    return self.file_name
+    return " " .. self.file_name
   end,
 }
 
@@ -44,5 +72,18 @@ local FileModule = {
   FileIcon,
   FileName,
 }
+
+FileModule = helper.surround({
+  left = {
+    delimiter = "none",
+  },
+  right = {
+    delimiter = "rounded",
+    highlight = { fg = surface },
+  },
+}, {
+  fg = COLORS.normal,
+  bg = surface,
+}, FileModule)
 
 return FileModule
