@@ -3,7 +3,7 @@ return {
 	build = false,
 	cmd = { "Fugit2", "Fugit2Diff", "Fugit2Graph", "Fugit2Rebase" },
 	keys = {
-		{ "<leader>F", mode = "n", "<cmd>Fugit2<cr>" },
+		{ "<leader>f", mode = "n", "<cmd>Fugit2<cr>" },
 	},
 
 	dependencies = {

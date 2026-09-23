@@ -3,7 +3,10 @@ return {
 		"wansmer/symbol-usage.nvim",
 		event = "BufReadPre",
 
-		opts = {},
+		opts = {
+			vt_position = "end_of_line",
+			vt_priority = 1,
+		},
 		config = function(_, opts)
 			local function h(name)
 				return vim.api.nvim_get_hl(0, { name = name })
@@ -72,9 +75,9 @@ return {
 				return res
 			end
 
-			require("symbol-usage").setup({
-				text_format = text_format,
-			})
+			opts = vim.tbl_deep_extend("keep", { text_format = text_format }, opts)
+			vim.print(opts)
+			require("symbol-usage").setup(opts)
 		end,
 	},
 	{
@@ -90,7 +93,8 @@ return {
 		event = "BufReadPre",
 
 		opts = {
-			prefix = "",
+			prefix = "->",
+			highlight = "DiagnosticVirtualTextHint",
 		},
 	},
 }

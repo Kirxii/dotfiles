@@ -4,7 +4,7 @@ return {
 		event = { "BufReadPre", "BufNewFile" },
 
 		opts = {
-			map_bs = true,
+			map_bs = false,
 		},
 	},
 	{

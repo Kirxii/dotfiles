@@ -11,8 +11,8 @@ return {
 
 		opts = {},
 	},
-  {
-    "bennypowers/splitjoin.nvim",
-    -- TODO: Add in lazy loading
-  }
+	{
+		"bennypowers/splitjoin.nvim",
+		-- TODO: Add in lazy loading
+	},
 }

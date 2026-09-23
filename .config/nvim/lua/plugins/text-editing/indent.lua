@@ -12,6 +12,7 @@ return {
 			indent = {
 				char = "│",
 				highlight = "LineNr",
+				priority = 10000,
 				smart_indent_cap = true,
 			},
 			exclude = {

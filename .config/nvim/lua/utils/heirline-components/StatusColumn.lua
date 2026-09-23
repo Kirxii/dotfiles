@@ -2,14 +2,14 @@ local hl = require("utils.highlights")
 local something = require("utils.string")
 
 local function set_hl()
-  for i = 1, 10 do
-    local green_hl = hl.dec_to_rgb(COLORS.violet)
-    local line_nr_hl = hl.dec_to_rgb(COLORS.line_nr)
-    local color = hl.blend_colors(green_hl, line_nr_hl, i / 12)
-    color = hl.rgb_to_dec(color)
+	for i = 1, 10 do
+		local green_hl = hl.dec_to_rgb(COLORS.violet)
+		local line_nr_hl = hl.dec_to_rgb(COLORS.line_nr)
+		local color = hl.blend_colors(green_hl, line_nr_hl, i / 12)
+		color = hl.rgb_to_dec(color)
 
-    vim.api.nvim_set_hl(0, "LineNr" .. i, { fg = color })
-  end
+		vim.api.nvim_set_hl(0, "LineNr" .. i, { fg = color })
+	end
 end
 set_hl()
 
@@ -18,48 +18,48 @@ set_hl()
 }) ]]
 
 local StatusColumnNumber = {
-  provider = function(self)
-    local text = ""
-    local highlight = ""
+	provider = function(self)
+		local text = ""
+		local highlight = ""
 
-    local diagnostic = vim.diagnostic.get(0, { lnum = self.lnum - 1 })
+		local diagnostic = vim.diagnostic.get(0, { lnum = self.lnum - 1 })
 
-    if diagnostic[1] then
-      highlight = self.SEVERITY_HIGHLIGHT[diagnostic[1].severity]
-    elseif self.is_current then
-      highlight = "%#RainbowDelimiterViolet#"
-    elseif self.relnum <= 10 then
-      highlight = string.format("%%#LineNr%s#", self.relnum)
-    end
-    text = string.format("%%=%s%3s", highlight, self.num)
+		if diagnostic[1] then
+			highlight = self.SEVERITY_HIGHLIGHT[diagnostic[1].severity]
+		elseif self.is_current then
+			highlight = "%#RainbowDelimiterViolet#"
+		elseif self.relnum <= 10 then
+			highlight = string.format("%%#LineNr%s#", self.relnum)
+		end
+		text = string.format("%%=%s%3s", highlight, self.num)
 
-    return text
-  end,
+		return text
+	end,
 }
 
 -- NOTE: Contains both the Separater line and Git state
 local StatusColumnBorder = {
-  provider = function(self)
-    local highlight = ""
+	provider = function(self)
+		local highlight = ""
 
-    local diagnostic = vim.diagnostic.get(0, { lnum = self.lnum - 1 })
+		local diagnostic = vim.diagnostic.get(0, { lnum = self.lnum - 1 })
 
-    if diagnostic[1] then
-      highlight = self.SEVERITY_HIGHLIGHT[diagnostic[1].severity]
-    elseif self.is_current then
-      highlight = "%#RainbowDelimiterViolet#"
-    elseif self.relnum <= 10 then
-      highlight = string.format("%%#LineNr%s#", self.relnum)
-    end
+		if diagnostic[1] then
+			highlight = self.SEVERITY_HIGHLIGHT[diagnostic[1].severity]
+		elseif self.is_current then
+			highlight = "%#RainbowDelimiterViolet#"
+		elseif self.relnum <= 10 then
+			highlight = string.format("%%#LineNr%s#", self.relnum)
+		end
 
-    return highlight .. self.SEPARATOR .. " "
-  end,
+		return highlight .. self.SEPARATOR .. " "
+	end,
 }
 
 -- NOTE: Contains Dianostic Icons, Folds, and Marks
 local StatusColumnSigns = {
-  provider = function(self)
-    --[[ function()
+	provider = function(self)
+		--[[ function()
         local function format_text(t, k)
           local txt = (t and t[k]) and t[k]:gsub("%s", "") or ""
           if #txt < 1 then
@@ -99,98 +99,97 @@ local StatusColumnSigns = {
 
         vim.print(get_extmark_signs(0, vim.v.lnum))
       end ]]
-    local function get_line_git_status(lnum)
-      lnum = lnum or vim.fn.line(".")
+		local function get_line_git_status(lnum)
+			lnum = lnum or vim.fn.line(".")
 
-      -- Retrieve all hunks for the current buffer
-      local hunks = require("gitsigns").get_hunks()
-      if not hunks then
-        return "unc"
-      end
+			-- Retrieve all hunks for the current buffer
+			local hunks = require("gitsigns").get_hunks()
+			if not hunks then
+				return "unc"
+			end
 
-      for _, hunk in ipairs(hunks) do
-        -- For added or modified lines, check if the line falls within the hunk's range
-        if lnum >= hunk.added.start and lnum <= (hunk.added.start + hunk.added.count - 1) then
-          return hunk.type -- Returns "add" or "change"
-        end
+			for _, hunk in ipairs(hunks) do
+				-- For added or modified lines, check if the line falls within the hunk's range
+				if lnum >= hunk.added.start and lnum <= (hunk.added.start + hunk.added.count - 1) then
+					return hunk.type -- Returns "add" or "change"
+				end
 
-        -- Handles deleted lines immediately after or topdelete scenarios
-        if hunk.type == "delete" and lnum == hunk.added.start then
-          return "delete"
-        end
-      end
+				-- Handles deleted lines immediately after or topdelete scenarios
+				if hunk.type == "delete" and lnum == hunk.added.start then
+					return "delete"
+				end
+			end
 
-      return "unc"
-    end
+			return "unc"
+		end
 
-    return string.format("%%=%6s", get_line_git_status(self.lnum))
-  end,
+		return string.format("%%=%6s", get_line_git_status(self.lnum))
+	end,
 }
 
 local StatusColumnModule = {
-  init = function(self)
-    self.lnum = vim.v.lnum
-    self.relnum = vim.v.relnum
-    self.is_current = self.relnum == 0
-    self.is_in_range = self.relnum <= self.HIGHLIGHT_RANGE
-    self.num = self.is_current and self.lnum or self.relnum
+	init = function(self)
+		self.lnum = vim.v.lnum
+		self.relnum = vim.v.relnum
+		self.is_current = self.relnum == 0
+		self.is_in_range = self.relnum <= self.HIGHLIGHT_RANGE
+		self.num = self.is_current and self.lnum or self.relnum
 
-    function self.surround_hl(highlight)
-      return string.format("%%#%s#", highlight)
-    end
+		function self.surround_hl(highlight)
+			return string.format("%%#%s#", highlight)
+		end
 
-    function self.format_text(t, k)
-      local txt = (t and t[k]) and t[k]:gsub("%s", "") or ""
-      if #txt < 1 then
-        return
-      end
-      t[k] = txt
-      return t
-    end
-    function self.get_extmark_signs(buf, lnum)
-      lnum = lnum - 1
-      local signs = vim.api.nvim_buf_get_extmarks(
-        buf,
-        -1,
-        { lnum, 0 },
-        { lnum, -1 },
-        { details = true, type = "sign" }
-      )
+		function self.format_text(t, k)
+			local txt = (t and t[k]) and t[k]:gsub("%s", "") or ""
+			if #txt < 1 then
+				return
+			end
+			t[k] = txt
+			return t
+		end
+		function self.get_extmark_signs(buf, lnum)
+			lnum = lnum - 1
+			local signs = vim.api.nvim_buf_get_extmarks(
+				buf,
+				-1,
+				{ lnum, 0 },
+				{ lnum, -1 },
+				{ details = true, type = "sign" }
+			)
 
-      local sns = vim
-        .iter()
-        :map(function(item)
-          return self.format_text(item[4], "sign_text")
-        end)
-        :fold({ git = {}, other = {} }, function(acc, item)
-          local text, highlight = item.sign_text, item.sign_hl_group
-          local is_git = highlight:match("^Git")
-          local target = is_git and acc.git or acc.other
-          table.insert(target, { text, highlight })
-          return acc
-        end)
-      if #sns.git == 0 then
-        sns.git = { " " }
-      end
-      return sns.git, sns.other
-    end
-  end,
-  static = {
-    SEPARATOR = "╎",
+			local sns = vim.iter()
+				:map(function(item)
+					return self.format_text(item[4], "sign_text")
+				end)
+				:fold({ git = {}, other = {} }, function(acc, item)
+					local text, highlight = item.sign_text, item.sign_hl_group
+					local is_git = highlight:match("^Git")
+					local target = is_git and acc.git or acc.other
+					table.insert(target, { text, highlight })
+					return acc
+				end)
+			if #sns.git == 0 then
+				sns.git = { " " }
+			end
+			return sns.git, sns.other
+		end
+	end,
+	static = {
+		SEPARATOR = "╎",
 
-    ACCENT_HIGHLIGHT = "RainbowDelimiterViolet",
-    HIGHLIGHT_RANGE = 10,
-    SEVERITY_HIGHLIGHT = {
-      [1] = "%#DiagnosticSignError#",
-      [2] = "%#DiagnosticSignWarn#",
-      [3] = "%#DiagnosticSignInfo#",
-      [4] = "%#DiagnosticSignHint#",
-    },
-  },
+		ACCENT_HIGHLIGHT = "RainbowDelimiterViolet",
+		HIGHLIGHT_RANGE = 10,
+		SEVERITY_HIGHLIGHT = {
+			[1] = "%#DiagnosticSignError#",
+			[2] = "%#DiagnosticSignWarn#",
+			[3] = "%#DiagnosticSignInfo#",
+			[4] = "%#DiagnosticSignHint#",
+		},
+	},
 
-  StatusColumnNumber,
-  -- StatusColumnSigns,
-  StatusColumnBorder,
+	StatusColumnNumber,
+	-- StatusColumnSigns,
+	StatusColumnBorder,
 }
 
 --[[ -- Helper to inspect signs on a specific line

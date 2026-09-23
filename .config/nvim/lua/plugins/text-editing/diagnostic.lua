@@ -1,7 +1,18 @@
 return {
 	"rachartier/tiny-inline-diagnostic.nvim",
 	event = "VeryLazy",
-	priority = 1000,
+	keys = {
+		{
+			"<leader>dt",
+			"<cmd>TinyInlineDiag toggle<cr>",
+			desc = "Toggle diagnostics (all)",
+		},
+		{
+			"<leader>dT",
+			"<cmd>TinyInlineDiag toggle_cursor<cr>",
+			desc = "Toggle diagnostics (cursor)",
+		},
+	},
 
 	opts = {
 		transparent_bg = false,
