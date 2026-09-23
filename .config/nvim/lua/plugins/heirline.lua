@@ -23,6 +23,15 @@ return {
 				normal        = get_hl("Normal").fg,
 				tabline       = get_hl("TabLine").bg,
 				statusline    = get_hl("StatusLine").bg,
+				line_nr       = get_hl("LineNr").fg,
+
+				red           = get_hl("RainbowDelimiterRed").fg,
+				orange        = get_hl("RainbowDelimiterOrange").fg,
+				yellow        = get_hl("RainbowDelimiterYellow").fg,
+				green         = get_hl("RainbowDelimiterGreen").fg,
+				cyan          = get_hl("RainbowDelimiterCyan").fg,
+				blue          = get_hl("RainbowDelimiterBlue").fg,
+				violet        = get_hl("RainbowDelimiterViolet").fg,
         -- stylua: ignore end
       }
 
@@ -44,7 +53,12 @@ return {
       statusline = { File },
       winbar = {},
       tabline = {},
-      statuscolumn = {},
+      statuscolumn = {
+        require("utils.heirline-components.StatusColumn"),
+        condition = function()
+          return conditions.is_active()
+        end,
+      },
 
       opts = {
         disable_winbar_cb = function(args)
