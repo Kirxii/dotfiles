@@ -8,9 +8,15 @@ autocmd({ "BufReadPre", "BufNewFile" }, {
 	once = true,
 	callback = function()
 		local servers = {
+			clangd = {},
 			lua_ls = require("lsp.servers.lua_ls"),
+			css_ls = {},
+			tailwindcss = {},
+			vtsls = {},
+			rust_analyzer = {},
 
 			stylua = {},
+			clang_format = {},
 		}
 
 		for server, config in pairs(servers) do
