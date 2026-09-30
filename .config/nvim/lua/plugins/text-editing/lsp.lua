@@ -55,7 +55,6 @@ return {
 	},
 	{
 		"nvimdev/lspsaga.nvim",
-
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter", -- optional
 			"nvim-tree/nvim-web-devicons", -- optional
@@ -64,6 +63,9 @@ return {
 		opts = {
 			ui = {
 				code_action = "󰯪",
+			},
+			lightbulb = {
+				sign = false,
 			},
 		},
 	},

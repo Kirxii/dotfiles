@@ -3,7 +3,7 @@ local something = require("utils.string")
 
 local function set_hl()
 	for i = 1, 10 do
-		local green_hl = hl.dec_to_rgb(COLORS.violet)
+		local green_hl = hl.dec_to_rgb(COLORS.green)
 		local line_nr_hl = hl.dec_to_rgb(COLORS.line_nr)
 		local color = hl.blend_colors(green_hl, line_nr_hl, i / 12)
 		color = hl.rgb_to_dec(color)
@@ -27,7 +27,7 @@ local StatusColumnNumber = {
 		if diagnostic[1] then
 			highlight = self.SEVERITY_HIGHLIGHT[diagnostic[1].severity]
 		elseif self.is_current then
-			highlight = "%#RainbowDelimiterViolet#"
+			highlight = "%#RainbowDelimiterGreen#"
 		elseif self.relnum <= 10 then
 			highlight = string.format("%%#LineNr%s#", self.relnum)
 		end
@@ -47,7 +47,7 @@ local StatusColumnBorder = {
 		if diagnostic[1] then
 			highlight = self.SEVERITY_HIGHLIGHT[diagnostic[1].severity]
 		elseif self.is_current then
-			highlight = "%#RainbowDelimiterViolet#"
+			highlight = "%#RainbowDelimiterGreen#"
 		elseif self.relnum <= 10 then
 			highlight = string.format("%%#LineNr%s#", self.relnum)
 		end
