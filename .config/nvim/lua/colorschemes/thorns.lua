@@ -1,5 +1,5 @@
 return {
-	"folke/tokyonight.nvim",
+	"jpwol/thorn.nvim",
 	lazy = true,
 
 	opts = {},

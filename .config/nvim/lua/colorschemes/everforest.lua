@@ -1,5 +1,8 @@
 return {
 	"sainnhe/everforest",
-	lazy = false,
-	priority = 1000,
+	lazy = true,
+
+	init = function()
+		vim.g.everforest_background = "hard"
+	end,
 }
