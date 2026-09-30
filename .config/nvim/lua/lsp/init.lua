@@ -10,10 +10,11 @@ autocmd({ "BufReadPre", "BufNewFile" }, {
 		local servers = {
 			clangd = {},
 			lua_ls = require("lsp.servers.lua_ls"),
+			html = {},
 			css_ls = {},
 			tailwindcss = {},
 			vtsls = {},
-			rust_analyzer = {},
+			rust_analyzer = require("lsp.servers.rust_analyzer"),
 
 			stylua = {},
 			clang_format = {},
