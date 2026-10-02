@@ -24,10 +24,10 @@ vim.g.maplocalleader = "\\"
 -- Setup lazy.nvim
 require("lazy").setup({
 	spec = {
-		-- import your plugins
 		{ import = "colorschemes" },
 		{ import = "plugins" },
 		{ import = "plugins.text-editing" },
+		{ import = "plugins.ui" },
 	},
 	change_detection = {
 		notify = false,

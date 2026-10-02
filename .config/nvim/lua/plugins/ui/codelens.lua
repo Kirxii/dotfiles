@@ -76,7 +76,6 @@ return {
 			end
 
 			opts = vim.tbl_deep_extend("keep", { text_format = text_format }, opts)
-			vim.print(opts)
 			require("symbol-usage").setup(opts)
 		end,
 	},

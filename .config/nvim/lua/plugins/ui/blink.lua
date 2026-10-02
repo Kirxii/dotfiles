@@ -24,8 +24,30 @@ return {
 		keymap = {
 			preset = "default",
 
-			["<Tab>"] = { "fallback" },
-			["<S-Tab>"] = { "fallback" },
+			["<Tab>"] = {
+				function(cmp)
+					if require("luasnip").expand_or_jumpable() then
+						cmp.cancel()
+						vim.schedule(function()
+							require("luasnip").expand_or_jump()
+						end)
+						return true
+					end
+				end,
+				"fallback",
+			},
+			["<S-Tab>"] = {
+				function(cmp)
+					if require("luasnip").jumpable(-1) then
+						cmp.cancel()
+						vim.schedule(function()
+							require("luasnip").jump(-1)
+						end)
+						return true
+					end
+				end,
+				"fallback",
+			},
 
 			["<c-h>"] = { "select_next", "fallback" },
 			["<c-l>"] = { "select_prev", "fallback" },
@@ -70,7 +92,7 @@ return {
 			ghost_text = { enabled = true },
 			keyword = { range = "full" },
 			list = {
-				selection = { preselect = false, auto_insert = false },
+				selection = { preselect = true, auto_insert = false },
 			},
 			menu = {
 				border = "rounded",
@@ -191,6 +213,8 @@ return {
 				show_on_accept_on_trigger_character = true,
 			},
 		},
+
+		snippets = { preset = "luasnip" },
 
 		-- Default list of enabled providers defined so that you can extend it
 		-- elsewhere in your config, without redefining it, due to `opts_extend`
