@@ -16,6 +16,27 @@ return {
 				"gofumpt",
 				"stylua",
 			},
+			ui_select = function(opts, items)
+				return vim.tbl_deep_extend("force", opts, {
+					actions = {
+						["default"] = function(selected, select_opts)
+							-- 1. Execute fzf-lua's native default select action first
+							require("fzf-lua").actions.file_edit(selected, select_opts)
+
+							-- 2. Force Neovim to look for the open Mason window and focus it
+							vim.schedule(function()
+								for _, win in ipairs(vim.api.nvim_list_wins()) do
+									local buf = vim.api.nvim_win_get_buf(win)
+									if vim.bo[buf].filetype == "mason" then
+										vim.api.nvim_set_current_win(win)
+										break
+									end
+								end
+							end)
+						end,
+					},
+				})
+			end,
 		},
 		config = function(_, opts)
 			require("mason").setup(opts)
